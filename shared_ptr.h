@@ -8,30 +8,35 @@
 template<class T>
 class shared_ptr {
 private:
-    int *count;
-    T *ptr;
+    int *count;     //reference count
+    T *ptr;         //real pointer
 public:
     shared_ptr(T *n);
 
     ~shared_ptr();
 
-    T* get();
+    T *get();
 
     shared_ptr(const shared_ptr &);
 
     shared_ptr &operator=(const shared_ptr &);
 
 };
-template <class T>
-T* shared_ptr<T>::get() {
+
+//get the real pointer
+template<class T>
+T *shared_ptr<T>::get() {
     return ptr;
 }
+
+//new from an object reference
 template<class T>
 shared_ptr<T>::shared_ptr(T *n):ptr(n) {
     count = new int(1);
     printf("Constructor called!\n");
 }
 
+//copy Constructor
 template<class T>
 shared_ptr<T>::shared_ptr(const shared_ptr<T> &p) {
     (*p.count)++;
@@ -39,6 +44,7 @@ shared_ptr<T>::shared_ptr(const shared_ptr<T> &p) {
     count = p.count;
 }
 
+//Destructor, destruct only if the reference count equals 0
 template<class T>
 shared_ptr<T>::~shared_ptr() {
     (*count)--;
@@ -51,7 +57,7 @@ shared_ptr<T>::~shared_ptr() {
     }
 }
 
-
+//=号操作符，返回自己，这样可以实现链式操作。等号左边的指针所指向的对象引用计数要先减一。
 template<class T>
 shared_ptr<T> &shared_ptr<T>::operator=(const shared_ptr &p) {
     (*count)--;
